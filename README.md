@@ -83,7 +83,7 @@ Mapping是一个极其好用的值对管理器
             $val = Status::fetch(); // [['STATUS_1'=>'1'],['STATUS_2'=>'2'],['STATUS_3'=>'3']]
             
             // 取值对所有数据的json
-            $val = Status::toJson();
+            $val = Status::toJson(); // {"STATUS_1":"1","STATUS_2":"2","STATUS_3":"3"}
                         
             // 取值数组
             $val = Status::toArray(); // ['1','2','3']
