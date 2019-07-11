@@ -110,21 +110,54 @@ abstract class Mapping
         return static::$fetch_cache[$class] ?? [];
     }
 
+    /**
+     * Value to Array
+     * @return mixed
+     */
     public static function toArray()
     {
-        $arr = static::fetch();
-        sort($arr);
+        $arr = [];
+        try {
+            $arr = static::fetch();
+            sort($arr);
+        } catch (Exception $e) {
+            //
+        }
         return $arr;
     }
 
+    /**
+     * 获取const的json
+     * @return string
+     */
     public static function toJson()
     {
-        return json_encode(static::fetch() ?: []);
+        $obj = (object)[];
+        try {
+            $obj = static::fetch();
+        } catch (Exception $e) {
+            //
+        }
+        return json_encode($obj);
     }
 
+    /**
+     * 获取值的逗号序列
+     * @return string
+     */
+    public static function toComma()
+    {
+        return implode(',', static::toArray() ?: []);
+    }
+
+    /**
+     * 获取<K,V>格式的关联数组
+     * @param string $target
+     * @return array
+     */
     public static function toKV($target = 'label')
     {
-        $data = static::fetch();
+        $data = static::toArray();
         $kv = [];
         foreach ($data as $v) {
             $kv[$v] = static::getOption($v, $target) ?: null;
@@ -132,9 +165,13 @@ abstract class Mapping
         return $kv;
     }
 
+    /**
+     * 获取<K,{options}>格式的关联数组
+     * @return array
+     */
     public static function toMixed()
     {
-        $data = static::fetch();
+        $data = static::toArray();
         $kv = [];
         $className = static::getClassName();
         foreach ($data as $v) {

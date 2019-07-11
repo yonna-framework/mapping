@@ -92,6 +92,9 @@ Mapping是一个极其好用的值对管理器
             $val = Status::toKV(); // [['1'=>'状态1'],['2'=>'状态2'],['3'=>'状态3']]
             $val = Status::toKV('power'); // [['1'=>'力量1'],['2'=>'力量2'],['3'=>'力量3']]
             
+            // 取逗号序列
+            $val = Status::toComma(); // 1,2,3
+            
             // mapping默认自带一个status判断，默认为1，你可以设它为其他值达到你想要的逻辑
             Status::setStatus(false);
             
