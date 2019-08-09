@@ -13,15 +13,6 @@ abstract class Mapping
     protected static $fetch_cache = [];
 
     /**
-     * 获取反射类名
-     * @return string
-     */
-    private static function getClassName()
-    {
-        return get_called_class() ?? __CLASS__;
-    }
-
-    /**
      * 设置一个值的自定义参数
      * @param $value
      * @param $optKey
@@ -29,11 +20,10 @@ abstract class Mapping
      */
     protected static function setOptions($value, $optKey, $optVal)
     {
-        $className = static::getClassName();
-        if (!isset(static::$map_data[$className])) {
-            static::$map_data[$className] = [];
+        if (!isset(static::$map_data[static::class])) {
+            static::$map_data[static::class] = [];
         }
-        static::$map_data[$className][$value][$optKey] = $optVal;
+        static::$map_data[static::class][$value][$optKey] = $optVal;
     }
 
     /**
@@ -46,8 +36,8 @@ abstract class Mapping
     {
         $self = new static();
         $map_data = $self::$map_data;
-        return isset($map_data[$self::getClassName()][$value][$optKey])
-            ? $map_data[$self::getClassName()][$value][$optKey] : null;
+        return isset($map_data[static::class][$value][$optKey])
+            ? $map_data[static::class][$value][$optKey] : null;
     }
 
     /**
@@ -97,17 +87,16 @@ abstract class Mapping
      */
     public static function fetch()
     {
-        $class = static::getClassName();
-        if (!isset(static::$fetch_cache[$class])) {
+        if (!isset(static::$fetch_cache[static::class])) {
             try {
-                $objClass = new ReflectionClass($class);
+                $objClass = new ReflectionClass(static::class);
                 $arrConst = $objClass->getConstants();
-                static::$fetch_cache[$class] = $arrConst;
+                static::$fetch_cache[static::class] = $arrConst;
             } catch (ReflectionException $e) {
                 throw new Exception($e->getMessage());
             }
         }
-        return static::$fetch_cache[$class] ?? [];
+        return static::$fetch_cache[static::class] ?? [];
     }
 
     /**
@@ -173,9 +162,8 @@ abstract class Mapping
     {
         $data = static::toArray();
         $kv = [];
-        $className = static::getClassName();
         foreach ($data as $v) {
-            $kv[$v] = static::$map_data[$className][$v];
+            $kv[$v] = static::$map_data[static::class][$v];
         }
         return $kv;
     }
